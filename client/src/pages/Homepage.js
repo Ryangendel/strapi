@@ -82,7 +82,6 @@ const Homepage = ({ handleClose }) => {
             console.log(data)
             console.log("BELOW IS THE DATA")
           } catch (err) {
-              console.log("IN MEEEEEEEEE")
             console.error(err);
           }
         
