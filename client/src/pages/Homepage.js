@@ -8,8 +8,8 @@ import {useNavigate} from 'react-router-dom';
 import { useMutation, useQuery, gql } from '@apollo/client'
 
 const REGISTER = gql `
-mutation {
-    user(input: { username: "username", email: "email", password: "password" }) {
+mutation ($username:String!, $email: String!, $password:String!){
+    register(input: { username: $username, email: $email, password: $password}) {
       jwt
       user {
         username
@@ -63,6 +63,7 @@ const Homepage = ({ handleClose }) => {
                 console.log('User profile', response.data.user);
                 console.log('User token', response.data.jwt);
                 await setCurrentUser({userprofile:response.data.user,token:response.data.jwt})
+                await localStorage.setItem('token', response.data.jwt);
                 let randomRestId=Math.floor(Math.random() * (2 - 1 + 1)) + 1;
                 navigate(`/restaurants/${randomRestId}`);
             })
@@ -73,10 +74,11 @@ const Homepage = ({ handleClose }) => {
 
     const handleSubmit = async e => {
         e.preventDefault();
+        
         try {
             // Execute mutation and pass in defined parameter data as variables
             const { data } = await addProfile({
-              variables: { username:"ryan", email:"email@gmail.com", password:"password" },
+              variables: { "username":"rya242n111", "email":"emamac3@gmail.com", "password":"password" },
             });
             console.log("BELOW IS THE DATA")
             console.log(data)

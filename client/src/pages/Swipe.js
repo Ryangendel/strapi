@@ -8,26 +8,12 @@ import Item from "@mui/material/Grid"
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import { useTheme } from '../hooks/userContext';
-
-const REVIEWS = gql`
-query restaurn{
-    restaurants{
-      name
-      picture{
-          formats
-      }
-    }
-  }
-`
+import { REVIEWS } from '../hooks/queries';
 
 export default function Homepage(userData) {
     const { currentUser, setCurrentClient } = useTheme();
     const { loading, error, data } = useQuery(REVIEWS)
-   
-    console.log(currentUser)
-
     
- 
     function likeFunction(e) {
         alert("hello")
     }

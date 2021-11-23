@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import { ApolloClient, HttpLink, ApolloLink, InMemoryCache, concat, ApolloProvider } from '@apollo/client';
 import {useState} from "react";
-import expressjwt from "express-jwt"
+import { setContext } from "@apollo/client/link/context";
+import { createHttpLink } from "apollo-link-http";
 
 import Homepage from "./pages/Homepage"
 import Matches from "./pages/Matches"
@@ -9,12 +10,29 @@ import Swipe from "./pages/Swipe"
 import Header from "./components/Header"
 import UserProvider from "./hooks/userContext"
 
+const httpLink = createHttpLink({
+  uri: 'http://localhost:1337/graphql',
+});
 
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('token');
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    }
+  }
+});
 
 const client = new ApolloClient({
-  uri: "http://localhost:1337/graphql",
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache()
-})
+});
+
+// const client = new ApolloClient({
+//   uri: "http://localhost:1337/graphql",
+//   cache: new InMemoryCache(),
+// })
 
 
 function App() {

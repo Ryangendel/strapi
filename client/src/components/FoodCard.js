@@ -18,7 +18,7 @@ import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import { useTheme } from '../hooks/userContext';
 import { useQuery, gql } from '@apollo/client'
 import { GETLIKES } from "../hooks/queries"
-const axios = require("axios")
+import { setContext } from "apollo-link-context"
 
 const REVIEWS1 = gql`
 query restaurn{
@@ -32,9 +32,9 @@ query restaurn{
 `
 
 const GETLIKES1 = gql`
-  query{
-    client (id:1) {
-        RestaurantIDlikes
+  query {
+    client (id: 1) {
+        restaurantIDlikes
     }
   }
 `;
@@ -66,20 +66,23 @@ export default function RecipeReviewCard(props) {
     const { currentUser, setCurrentClient } = useTheme();
     const [expanded, setExpanded] = React.useState(false);
     const [currentUserData, setCurrentUserData] = React.useState();
-    const { loading, error, data } = useQuery(GETLIKES1)
+    const { loading, error, data } = useQuery(GETLIKES, {
+        variables:{
+            id: 1
+        }
+    })
     const profiles = data?.profiles || [];  
-    console.log("ERROR") 
-    console.log(error) 
-    console.log("ERROR") 
-    console.log(data)
 
     React.useEffect(()=>{
-        //loadData()
-        
+        console.log("%%%%%%")
+        console.log(currentUser.userprofile.id)
+        console.log(currentUser.token)
+        console.log("%%%%%%")
         setCurrentUserData(data)
     },[]);
 
     const handleExpandClick = () => {
+        console.log()
         setExpanded(!expanded);
     };
 
@@ -88,16 +91,15 @@ export default function RecipeReviewCard(props) {
     }
 
     const interested = () => {
+        console.log("&&&&&8888888")
+        console.log(data)
+        console.log("&&&&&8888888")
         setCurrentUserData(data)
         console.log("CURRENTUSERDATA")
         console.log(currentUser)
         console.log("CURRENTUSERDATA")
         console.log(currentUser.token)
-
-
         //const { loading, error, data } = useQuery(REVIEWS)
-
-
         // axios.put("http://localhost:1337/clients/1",
         //     {
         //         "restaurantIDlikes": "9999"
@@ -150,14 +152,6 @@ export default function RecipeReviewCard(props) {
                 <IconButton aria-label="share">
                 </IconButton>
                 <NotInterestedIcon onClick={notInterested} style={{ color: "red", transform: "scale(2.8)", marginLeft: "60%", marginBottom: "20px" }} />
-                {/* <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore> */}
             </CardActions>
         </Card>
     );
